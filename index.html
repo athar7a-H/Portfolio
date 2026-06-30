@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atharva Hinge | Frontend & Python Developer</title>
+  <meta name="description" content="Frontend developer expanding into AI/ML. Building fast, accessible, intelligent interfaces.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- CURSOR -->
+  <div id="cursor-ring"></div>
+  <div id="cursor-dot"></div>
+  <canvas id="trailCanvas"></canvas>
+
+  <!-- GRID BG -->
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="grid-glow" aria-hidden="true"></div>
+  <div class="grid-glow-core" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="scroll-glow-line" id="scrollGlowLine" aria-hidden="true"></div>
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="login-scanline"></div>
+      <div class="login-dots">
+        <div class="login-dot r"></div>
+        <div class="login-dot y"></div>
+        <div class="login-dot g"></div>
+      </div>
+      <div class="login-globe">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M6 20v-2a6 6 0 0 1 12 0v2"/>
+        </svg>
+      </div>
+      <div class="login-name">Atharva Hinge</div>
+      <div class="login-role">// FRONTEND_DEV &amp; PYTHON_ENG</div>
+      <button class="login-btn" id="enterBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+        ENTER SYSTEM
+      </button>
+      <div class="login-locked">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        Secure Workstation Locked
+      </div>
+    </div>
+  </div>
+
+  <!-- BIOS BOOT SCREEN -->
+  <div class="bios-screen" id="biosScreen" style="display:none;">
+    <div class="bios-inner">
+      <div class="bios-header">
+        <span class="bios-brand">ATHARVA OS v3.0 // BIOS</span>
+        <span class="bios-right">Energy Star Compliant</span>
+      </div>
+      <div class="bios-body">
+        <div class="bios-line">CPU: FRONTEND_CORE @ 2.4GHz &nbsp;&nbsp; RAM: 8.45 CGPA</div>
+        <div class="bios-line">Detecting devices...</div>
+        <div class="bios-line bios-delay-1">HDD: Portfolio v3.0 ................... <span class="ok">OK</span></div>
+        <div class="bios-line bios-delay-2">AI/ML Module .......................... <span class="ok">OK</span></div>
+        <div class="bios-line bios-delay-3">Python Runtime ........................ <span class="ok">OK</span></div>
+        <div class="bios-line bios-delay-4">React Framework ....................... <span class="ok">OK</span></div>
+        <div class="bios-line bios-delay-5">&nbsp;</div>
+        <div class="bios-line bios-delay-5">Press DEL to enter SETUP &nbsp;&nbsp; Press F1 to continue</div>
+        <div class="bios-line bios-delay-5">&nbsp;</div>
+        <div class="bios-progress-wrap bios-delay-5">
+          <div class="bios-progress-bar">
+            <div class="bios-progress-fill" id="biosProgress"></div>
+          </div>
+          <span class="bios-pct" id="biosPct">0%</span>
+        </div>
+        <div class="bios-line bios-delay-5">Booting <span class="blink">_</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN OS SHELL -->
+  <div class="os-shell" id="osShell">
+
+    <!-- TOP STATUS BAR (WiFi, Battery, Time) -->
+    <div id="statusBar"></div>
+
+    <!-- ════════════════════════════════════════════════
+         FLOATING PILL NAV
+    ════════════════════════════════════════════════ -->
+    <nav class="nav-pill" id="nav" aria-label="Primary">
+      <div class="nav-pill-inner">
+
+        <!-- Logo -->
+        <a href="#hero" class="nav-brand">
+          AH<span class="brand-dot">.</span>
+        </a>
+
+        <!-- Center links -->
+        <div class="nav-center">
+          <a href="#hero" class="nav-pill-link active" data-section="hero">HOME</a>
+          <a href="#about" class="nav-pill-link" data-section="about">ABOUT</a>
+          <a href="#experience" class="nav-pill-link" data-section="experience">CAREER</a>
+          <a href="#work" class="nav-pill-link" data-section="work">PROJECTS</a>
+          <a href="#leetcode" class="nav-pill-link" data-section="leetcode">LEETCODE</a>
+          <a href="#contact" class="nav-pill-link" data-section="contact">CONTACT</a>
+        </div>
+
+        <!-- Right cluster: socials + divider + search -->
+        <div class="nav-right">
+          <div class="nav-socials">
+            <a href="https://github.com/athar7a-H" target="_blank" rel="noopener" class="nav-soc" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.4 3.6 1 .1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.6.1-3.3 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 3 .1 3.3.8.8 1.2 1.9 1.2 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/atharva-hinge-9ab646384" target="_blank" rel="noopener" class="nav-soc" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2zM8 19H5v-9h3v9zM6.5 8.7A1.7 1.7 0 1 1 6.5 5.3a1.7 1.7 0 0 1 0 3.4zM19 19h-3v-4.7c0-1.1 0-2.6-1.6-2.6S12.6 13 12.6 14.2V19h-3v-9h2.9v1.2h.1a3.2 3.2 0 0 1 2.9-1.6c3.1 0 3.6 2 3.6 4.7V19z"/></svg>
+            </a>
+            <a href="https://leetcode.com/u/Athar7a_10" target="_blank" rel="noopener" class="nav-soc" aria-label="LeetCode">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 2.5 6.6 9.4a3.1 3.1 0 0 0 0 4.4l5.6 5.6a3.1 3.1 0 0 0 4.4 0l3.4-3.4a1 1 0 0 0-1.4-1.4l-3.4 3.4a1.1 1.1 0 0 1-1.6 0l-5.6-5.6a1.1 1.1 0 0 1 0-1.6l6.9-6.9a1 1 0 0 0-1.4-1.4zm-3 9.5a1 1 0 0 0 1 1h8a1 1 0 0 0 0-2h-8a1 1 0 0 0-1 1z"/></svg>
+            </a>
+          </div>
+          <span class="nav-divider" aria-hidden="true"></span>
+          <button class="nav-search-btn" id="navSearchBtn" aria-label="Open command palette">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7"/>
+              <path d="m20 20-3.5-3.5"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile hamburger -->
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- MOBILE NAV -->
+    <div class="mobile-nav" id="mobileNav">
+      <a href="#hero" class="mob-link">[HOME]</a>
+      <a href="#about" class="mob-link">[ABOUT]</a>
+      <a href="#experience" class="mob-link">[CAREER]</a>
+      <a href="#work" class="mob-link">[PROJECTS]</a>
+      <a href="#leetcode" class="mob-link">[LEETCODE]</a>
+      <a href="#contact" class="mob-link">[CONTACT]</a>
+    </div>
+
+    <!-- ════════════════════════════════════════════════
+         COMMAND PALETTE (search overlay)
+    ════════════════════════════════════════════════ -->
+    <div class="palette-backdrop" id="paletteBackdrop"></div>
+    <div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Command palette">
+      <div class="palette-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+        </svg>
+        <input type="text" id="paletteInput" placeholder="Search sections, commands…" autocomplete="off" spellcheck="false">
+        <span class="palette-kbd">ESC</span>
+      </div>
+      <ul class="palette-list" id="paletteList"></ul>
+    </div>
+
+    <!-- HERO -->
+    <section id="hero" class="hero">
+      <div class="hero-top-bar">
+        <span>ATHARVA_HINGE.EXE</span>
+        <span class="hero-date" id="heroDate"></span>
+      </div>
+      <div class="hero-center">
+        <div class="hero-tag reveal">
+          <span class="tag-dot"></span>AVAILABLE_FOR_WORK // FRONTEND &amp; PYTHON_DEV
+        </div>
+        <h1 class="hero-name reveal reveal-delay-1">
+          <span class="name-main">ATHARVA</span>
+          <span class="name-sub">HINGE<span class="cursor-blink">_</span></span>
+        </h1>
+        <p class="hero-desc reveal reveal-delay-2">
+          &gt; Frontend developer with a growing focus on <span class="accent">AI/ML</span> —<br>
+          &gt; Turning design and data into fast, accessible, intelligent interfaces.
+        </p>
+        <div class="hero-actions reveal reveal-delay-3">
+          <a href="#work" class="btn-terminal">[ VIEW_WORK ]</a>
+          <a href="#contact" class="btn-terminal btn-ghost">[ GET_IN_TOUCH ]</a>
+        </div>
+        <div class="hero-links reveal reveal-delay-4">
+          <a href="https://github.com/athar7a-H" target="_blank" rel="noopener" class="ext-link">GitHub ↗</a>
+          <a href="https://www.linkedin.com/in/atharva-hinge-9ab646384" target="_blank" rel="noopener" class="ext-link">LinkedIn ↗</a>
+          <a href="https://leetcode.com/u/Athar7a_10" target="_blank" rel="noopener" class="ext-link">LeetCode ↗</a>
+          <a href="mailto:atharvahinge1005@gmail.com" class="ext-link">Email ↗</a>
+        </div>
+      </div>
+      <div class="hero-orb" aria-hidden="true"></div>
+    </section>
+
+    <!-- METRICS -->
+    <section class="metrics-section reveal">
+      <div class="section-header">
+        <span class="section-label">// SYSTEM_METRICS</span>
+        <span class="section-sub">Measured. Real. Verifiable.</span>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-card bracket">
+          <span class="metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M6 4h12v6a6 6 0 0 1-12 0V4Z"/><path d="M9 21h6"/><path d="M12 17v4"/></svg></span>
+          <div class="metric-num" data-target="8.45" data-decimal="2">0</div>
+          <div class="metric-unit">/10</div>
+          <div class="metric-label">CGPA SCORE</div>
+        </div>
+        <div class="metric-card bracket">
+          <span class="metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+          <div class="metric-num" data-target="2">0</div>
+          <div class="metric-unit">+</div>
+          <div class="metric-label">YEARS BUILDING</div>
+        </div>
+        <div class="metric-card bracket">
+          <span class="metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+          <div class="metric-num" data-target="7">0</div>
+          <div class="metric-unit">×</div>
+          <div class="metric-label">TECH SKILL DOMAINS</div>
+        </div>
+        <div class="metric-card bracket">
+          <span class="metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></span>
+          <div class="metric-num" data-target="100">0</div>
+          <div class="metric-unit">%</div>
+          <div class="metric-label">CURIOSITY REMAINING</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track" id="marqueeTrack">
+    <span class="mq mq-dim">React</span>
+    <span class="mq mq-on">Python</span>
+    <span class="mq mq-dim">TensorFlow</span>
+    <span class="mq mq-dim">LangChain</span>
+    <span class="mq mq-on">FastAPI</span>
+    <span class="mq mq-dim">PyTorch</span>
+    <span class="mq mq-dim">Docker</span>
+    <span class="mq mq-on">Tailwind</span>
+    <span class="mq mq-dim">OpenCV</span>
+    <span class="mq mq-dim">LangGraph</span>
+    <span class="mq mq-on">AWS</span>
+    <span class="mq mq-dim">Streamlit</span>
+    <span class="mq mq-dim">JavaScript</span>
+    <span class="mq mq-on">Node.js</span>
+    <span class="mq mq-dim">React</span>
+    <span class="mq mq-on">Python</span>
+    <span class="mq mq-dim">TensorFlow</span>
+    <span class="mq mq-dim">LangChain</span>
+    <span class="mq mq-on">FastAPI</span>
+    <span class="mq mq-dim">PyTorch</span>
+    <span class="mq mq-dim">Docker</span>
+    <span class="mq mq-on">Tailwind</span>
+    <span class="mq mq-dim">OpenCV</span>
+    <span class="mq mq-dim">LangGraph</span>
+    <span class="mq mq-on">AWS</span>
+    <span class="mq mq-dim">Streamlit</span>
+    <span class="mq mq-dim">JavaScript</span>
+    <span class="mq mq-on">Node.js</span>
+  </div>
+</div>
+
+    <!-- ABOUT / SKILLS -->
+    <section id="about" class="section">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">// IDENTITY_FILE</span>
+          <span class="section-num">01</span>
+        </div>
+        <div class="about-grid">
+          <div class="about-left reveal-left">
+            <div class="classified-tag">ACCESS_LEVEL: PUBLIC</div>
+            <p class="about-statement">
+              I'm a passionate frontend developer expanding into <em class="accent">AI/ML and agentic systems</em> — translating designs into responsive interfaces, debugging fast, and shipping.
+            </p>
+            <div class="about-body">
+              <p>&gt; Electronics &amp; Telecommunication Engineering student at <strong>Pillai College of Engineering</strong> (2023–2027). I care about fast, accessible interfaces and the craft behind them.</p>
+              <p>&gt; I'm actively training in Python-based ML/AI pipelines — integrating <strong>LangChain</strong>, <strong>FastAPI</strong>, and <strong>AWS</strong> into production workflows. Currently building an AI agent portfolio to complement my frontend work.</p>
+              <p>&gt; Outside engineering: chess, endurance running, and anything that sharpens focus under pressure.</p>
+            </div>
+          </div>
+
+          <div class="about-right reveal-right">
+            <div class="skills-terminal bracket">
+              <div class="terminal-bar">
+                <span class="t-dot t-red"></span>
+                <span class="t-dot t-yellow"></span>
+                <span class="t-dot t-green"></span>
+                <span class="t-title">skills.json — read_only</span>
+              </div>
+              <div class="terminal-body">
+                <div class="t-line"><span class="t-prompt">$</span> cat skills.json</div>
+                <div class="skill-group">
+                  <div class="sg-label"><span class="accent-label">FRONTEND:</span></div>
+                  <div class="sg-tags">
+                    <span>React.js</span><span>JavaScript</span><span>HTML/CSS</span>
+                    <span>Tailwind</span><span>Figma</span>
+                  </div>
+                </div>
+                <div class="skill-group">
+                  <div class="sg-label"><span class="accent-label">AI/ML + BACKEND:</span></div>
+                  <div class="sg-tags">
+                    <span>Python</span><span>FastAPI</span><span>LangChain</span>
+                    <span>AWS</span><span>REST APIs</span>
+                  </div>
+                </div>
+                <div class="skill-group">
+                  <div class="sg-label"><span class="accent-label">ML/AI LIBRARIES:</span></div>
+                  <div class="sg-tags">
+                    <span>TensorFlow</span><span>PyTorch</span><span>OpenCV</span>
+                    <span>LangGraph</span><span>Streamlit</span>
+                  </div>
+                </div>
+                <div class="skill-group">
+                  <div class="sg-label"><span class="accent-label">TOOLS:</span></div>
+                  <div class="sg-tags">
+                    <span>Docker</span><span>Git</span><span>VS Code</span>
+                    <span>Postman</span><span>Linux</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MOBILE TAB: tap to reveal terminal drawer -->
+    <button class="term-mobile-tab" id="termMobileTab" aria-label="Open terminal">
+      <span class="dot"></span> SHELL
+    </button>
+    <div class="term-mobile-backdrop" id="termMobileBackdrop"></div>
+
+    <!-- ALWAYS OPEN DRAGGABLE TERMINAL -->
+    <div class="term-panel skills-terminal bracket open" id="termPanel">
+      <div class="terminal-bar">
+        <span class="t-dot t-red"></span>
+        <span class="t-dot t-yellow"></span>
+        <span class="t-dot t-green"></span>
+        <span class="t-title">shell.sh — atharva@portfolio:~</span>
+        <button class="term-mobile-close" id="termMobileClose" aria-label="Close terminal">✕</button>
+      </div>
+      <div class="terminal-body" id="termBody">
+        <div class="t-line"><span class="t-prompt">$</span> help</div>
+        <span class="t-output">Type <span style="color:var(--accent)">help</span> for the full command list — try <span style="color:var(--accent)">whoami</span>, <span style="color:var(--accent)">leetcode</span>, or <span style="color:var(--accent)">projects</span>.</span>
+      </div>
+      <div class="t-input-row">
+        <span class="t-input-prompt">$</span>
+        <input class="t-input" id="termInput" type="text" placeholder="type a command..." autocomplete="off" spellcheck="false">
+      </div>
+    </div>
+
+    <!-- CAREER LOG (With scroll tracking progress line) -->
+    <section id="experience" class="section">
+      <div class="container" style="position: relative; padding-left: clamp(32px, 5vw, 64px);">
+        
+        <!-- GLOWING TRACK LINE -->
+        <div class="exp-timeline-track">
+          <div class="exp-timeline-fill" id="expTimelineFill">
+            <div class="exp-timeline-glow"></div>
+          </div>
+        </div>
+
+        <div class="section-header reveal">
+          <span class="section-label">// CAREER_LOG</span>
+          <span class="section-sub" style="color: var(--accent);">⚡ LIVE // [ Dec 2024 - Jan 2026 ]</span>
+          <span class="section-num">02</span>
+        </div>
+
+        <div class="career-item reveal">
+          <div class="career-meta">
+            <div class="career-badge">ACTIVE</div>
+            <div class="career-period">[2024 – PRESENT]</div>
+            <div class="career-type">AI DEVELOPER</div>
+          </div>
+          <div class="career-body">
+            <h3 class="career-role">AI/ML Project Developer</h3>
+            <div class="career-org">@Self-Directed &nbsp;<span class="career-loc">Navi Mumbai</span></div>
+            <ul class="career-bullets">
+              <li>&gt; Developed ISL recognition using computer vision + TensorFlow for Smart India Hackathon.</li>
+              <li>&gt; Building agentic AI pipelines with LangChain, LangGraph and FastAPI.</li>
+              <li>&gt; Integrating RAG systems and LLM-powered automation workflows.</li>
+            </ul>
+            <div class="career-stack">
+              <span>Python</span><span>FastAPI</span><span>LangChain</span><span>AWS</span><span>REST APIs</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="career-item reveal reveal-delay-1">
+          <div class="career-meta">
+            <div class="career-period">[2023 – 2024]</div>
+            <div class="career-type">FREELANCE</div>
+          </div>
+          <div class="career-body">
+            <h3 class="career-role">Frontend Developer</h3>
+            <div class="career-org">@Freelance &nbsp;<span class="career-loc">Remote</span></div>
+            <ul class="career-bullets">
+              <li>&gt; Built responsive React.js interfaces for clients across various domains.</li>
+              <li>&gt; Optimized performance and accessibility across all deliverables.</li>
+              <li>&gt; Collaborated on design-to-code handoffs with close attention to detail.</li>
+            </ul>
+            <div class="career-stack">
+              <span>React.js</span><span>JavaScript</span><span>Tailwind CSS</span><span>HTML/CSS</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="career-divider reveal">// EDUCATION_FILE</div>
+
+        <div class="career-item reveal reveal-delay-1">
+          <div class="career-meta">
+            <div class="career-badge career-badge-blue">DEGREE</div>
+            <div class="career-period">[2023 – 2027]</div>
+          </div>
+          <div class="career-body">
+            <h3 class="career-role">B.E. Electronics &amp; Telecommunication</h3>
+            <div class="career-org">@Pillai College of Engineering &nbsp;<span class="career-loc">Navi Mumbai</span></div>
+            <div class="career-stack" style="margin-top:1rem;">
+              <span>CGPA: 8.45/10</span><span>AI/ML Focus</span><span>2023–2027</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="career-item reveal reveal-delay-2">
+          <div class="career-meta">
+            <div class="career-period">[2023]</div>
+          </div>
+          <div class="career-body">
+            <h3 class="career-role">Class XII</h3>
+            <div class="career-org">@K.B.P. College &nbsp;<span class="career-loc">Navi Mumbai</span></div>
+            <div class="career-stack" style="margin-top:1rem;"><span>Score: 60.80%</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="work" class="section">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">// OPERATION_ARCHIVES</span>
+          <span class="section-sub">TOP SECRET // LEVEL 3 CLEARANCE</span>
+        </div>
+        <p class="archives-sub reveal">&gt; ACCESSING ENCRYPTED DATABASE... Below are the declassified operational records. Each file represents a successfully executed build.</p>
+
+        <div class="project-list">
+          <a href="https://github.com/athar7a-H/Multi_Agentic-AI-system" target="_blank" rel="noopener" class="project-file bracket reveal">
+            <div class="project-file-img">
+              <img class="pf-img" src="Images/agent.jpeg" alt="ResearchMind multi-agent AI research system screenshot" loading="lazy">
+              <div class="pf-scrim"></div>
+              <div class="pf-img-bg" style="background:radial-gradient(circle at 30% 40%,rgba(184,255,0,.08),transparent 60%)"></div>
+              <div class="pf-grid"></div>
+              <div class="pf-overlay">[ VIEW_SOURCE ]</div>
+              <span class="evidence-num">EVIDENCE_#001</span>
+            </div>
+            <div class="project-file-body">
+              <div class="pf-top">
+                <div class="pf-meta">CONFIDENTIAL // SOURCE: GITHUB</div>
+                <div class="pf-status status-deployed">DEPLOYED</div>
+              </div>
+              <h3 class="pf-title">OPERATION: Multi-Agent AI Research System</h3>
+              <p class="pf-desc">Four autonomous AI agents that work in sequence to research, read, draft and critique any topic end-to-end — orchestrated with LangChain, powered by Mistral AI, and wrapped in a Streamlit interface.</p>
+              <div class="pf-stack">
+                <span>LangChain</span><span>Mistral AI</span><span>Streamlit</span><span>Python</span><span>Multi-Agent</span>
+              </div>
+            </div>
+          </a>
+
+          <a href="https://github.com/athar7a-H/google-maps-business-scraper" target="_blank" rel="noopener" class="project-file bracket reveal reveal-delay-1">
+            <div class="project-file-img">
+              <img class="pf-img" src="Images/gmaps image.avif" alt="Google Maps business scraper screenshot" loading="lazy">
+              <div class="pf-scrim"></div>
+              <div class="pf-img-bg" style="background:radial-gradient(circle at 70% 30%,rgba(124,92,255,.12),transparent 60%)"></div>
+              <div class="pf-grid"></div>
+              <div class="pf-overlay">[ VIEW_SOURCE ]</div>
+              <span class="evidence-num">EVIDENCE_#002</span>
+            </div>
+            <div class="project-file-body">
+              <div class="pf-top">
+                <div class="pf-meta">CONFIDENTIAL // SOURCE: GITHUB</div>
+                <div class="pf-status status-deployed">DEPLOYED</div>
+              </div>
+              <h3 class="pf-title">OPERATION: Google Maps Business Scraper</h3>
+              <p class="pf-desc">A Playwright-driven scraper that crawls Google Maps listings and pulls structured business data — names, phone numbers, emails and ratings — exporting it all directly to Excel for lead generation and research.</p>
+              <div class="pf-stack">
+                <span>Playwright</span><span>Python</span><span>Web Scraping</span><span>Automation</span><span>Excel Export</span>
+              </div>
+            </div>
+          </a>
+
+          <a href="https://github.com/athar7a-H" target="_blank" rel="noopener" class="project-file bracket reveal reveal-delay-2">
+            <div class="project-file-img">
+              <img class="pf-img" src="Images/isl.jpg" alt="Indian Sign Language to text and speech recognition screenshot" loading="lazy">
+              <div class="pf-scrim"></div>
+              <div class="pf-img-bg" style="background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.03),transparent 60%)"></div>
+              <div class="pf-grid"></div>
+              <div class="pf-overlay">[ CLICK_TO_ACCESS ]</div>
+              <span class="evidence-num">EVIDENCE_#003</span>
+            </div>
+            <div class="project-file-body">
+              <div class="pf-top">
+                <div class="pf-meta">CONFIDENTIAL // SMART INDIA HACKATHON</div>
+                <div class="pf-status status-complete">MISSION_COMPLETE</div>
+              </div>
+              <h3 class="pf-title">OPERATION: Indian Sign Language → Text &amp; Speech</h3>
+              <p class="pf-desc">A team-built ISL recognition system using computer vision + machine learning to translate hand gestures into text and speech — improving communication accessibility. Smart India Hackathon build.</p>
+              <div class="pf-stack">
+                <span>Python</span><span>Computer Vision</span><span>TensorFlow</span><span>OpenCV</span><span>ML</span>
+              </div>
+            </div>
+          </a>
+
+          <a href="https://github.com/athar7a-H" target="_blank" rel="noopener" class="project-file bracket reveal reveal-delay-3">
+            <div class="project-file-img">
+              <!-- TODO: drop a screenshot/collage in here if you'd like, e.g. <img class="pf-img" src="assets/more-repos.jpg" alt="GitHub archive"> -->
+              <div class="pf-img-bg" style="background:radial-gradient(circle at 50% 50%,rgba(184,255,0,.05),transparent 65%)"></div>
+              <div class="pf-grid"></div>
+              <div class="pf-overlay">[ BROWSE_ARCHIVE ]</div>
+              <span class="evidence-num">EVIDENCE_#004</span>
+            </div>
+            <div class="project-file-body">
+              <div class="pf-top">
+                <div class="pf-meta">CONFIDENTIAL // FULL INDEX</div>
+                <div class="pf-status status-archive">MORE_ON_GITHUB</div>
+              </div>
+              <h3 class="pf-title">OPERATION: More Projects on GitHub</h3>
+              <p class="pf-desc">Smaller builds, experiments and clones — including a Cuberto website clone with Shery.js animations — live in the wider GitHub archive. Full source available for every project.</p>
+              <div class="pf-stack">
+                <span>HTML/CSS/JS</span><span>Experiments</span><span>Clones</span><span>Open Source</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEETCODE -->
+    <section id="leetcode" class="section">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">// LEETCODE_LOG</span>
+          <span class="section-num">03</span>
+        </div>
+        <p class="archives-sub reveal">&gt; PINGING leetcode.com/u/Athar7a ... rendering submission grid for the past 365 days.</p>
+        <div class="lc-card bracket reveal">
+          <div class="lc-top">
+            <div class="lc-stat">
+              <span class="lc-num" id="lcTotal">0</span>
+              <span class="lc-statlabel">submissions in the past one year</span>
+            </div>
+            <div class="lc-meta">
+              <span>Total active days: <b id="lcActive">0</b></span>
+              <span>Max streak: <b id="lcStreak">0</b></span>
+            </div>
+            <a href="https://leetcode.com/u/Athar7a_10_10" target="_blank" rel="noopener" class="lc-link">VIEW_PROFILE ↗</a>
+          </div>
+          <div class="lc-cal-wrap">
+            <div class="lc-months" id="lcMonths"></div>
+            <div class="lc-grid" id="lcGrid"></div>
+          </div>
+          <div class="lc-legend">
+            <span>Less</span>
+            <span class="lc-cell l0"></span><span class="lc-cell l1"></span><span class="lc-cell l2"></span><span class="lc-cell l3"></span><span class="lc-cell l4"></span>
+            <span>More</span>
+          </div>
+          <div class="lc-note">// live-fetch attempted on load — falls back to last synced snapshot if the API is unreachable from this network.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section contact-section">
+      <div class="contact-orb" aria-hidden="true"></div>
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">// SIGNAL_INTERCEPT</span>
+          <span class="section-sub">ENCRYPTED // OPEN CHANNEL</span>
+        </div>
+        <div class="contact-tag reveal">◈ AVAILABLE FOR WORK — OPEN TO OPPORTUNITIES</div>
+        <h2 class="contact-heading contact-name reveal">ATHARVA HINGE</h2>
+        <h2 class="contact-heading reveal">LET'S BUILD<br><span class="accent">SOMETHING.</span></h2>
+        <div class="contact-cta reveal reveal-delay-1">
+          <a href="mailto:atharvahinge1005@gmail.com" class="btn-terminal btn-big">[ atharvahinge1005@gmail.com ↗ ]</a>
+        </div>
+        <div class="contact-links reveal reveal-delay-2">
+          <a href="tel:+917021610509" class="c-link">+91 70216 10509</a>
+          <span class="c-sep">//</span>
+          <a href="https://github.com/athar7a-H" target="_blank" rel="noopener" class="c-link">GitHub ↗</a>
+          <a href="https://www.linkedin.com/in/atharva-hinge-9ab646384" target="_blank" rel="noopener" class="c-link">LinkedIn ↗</a>
+          <a href="https://leetcode.com/u/Athar7a_10" target="_blank" rel="noopener" class="c-link">LeetCode ↗</a>
+        </div>
+      </div>
+      <footer class="footer">
+        <div class="footer-wordmark-wrap">
+          <div class="footer-wordmark">ATHARVA</div>
+          <div class="visitor-floater bracket" id="visitorFloater">
+            <span class="vf-dot"></span>
+            <div class="vf-stat"><span class="vf-num" id="vfVisits">0</span><span class="vf-label">VISITORS</span></div>
+            <div class="vf-stat"><span class="vf-num" id="vfMaxTime">0m</span><span class="vf-label">MAX TIME SPENT</span></div>
+          </div>
+        </div>
+        <div class="footer-bar">
+          <span>Built by Atharva Hinge</span>
+          <span>© 2026 — Frontend &amp; Python Developer</span>
+          <a href="#hero" class="footer-top">[ BACK_TO_TOP ↑ ]</a>
+        </div>
+      </footer>
+    </section>
+
+  </div><!-- end .os-shell -->
+
+  <script src="script.js" defer></script>
+</body>
+</html>
